@@ -1,17 +1,16 @@
 package main
 
 import (
-	"embed"
 	"encoding/json"
 	"fmt"
 	"html/template"
 	"io/ioutil"
 	"net/http"
 	"os"
-)
+	"path/filepath"
 
-//go:embed templates/*
-var templatesFS embed.FS
+	"github.com/joho/godotenv"
+)
 
 // Struct untuk menyimpan data DNS Record
 type DNSRecord struct {
@@ -19,10 +18,16 @@ type DNSRecord struct {
 }
 
 func main() {
+	// Load environment variables from .env file
+	if err := godotenv.Load(); err != nil {
+		fmt.Println("Error loading .env file:", err)
+		return
+	}
+
 	authToken := os.Getenv("AUTH_TOKEN")
 
 	// Menangani rute "/result"
-	http.HandleFunc("/result", func(w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		// Buat klien HTTP
 		client := &http.Client{}
 
@@ -86,7 +91,7 @@ func main() {
 		}
 
 		// Menggunakan template HTML
-		tmpl, err := template.ParseFS(templatesFS, "templates/index.html")
+		tmpl, err := template.ParseFiles("templates/index.html")
 		if err != nil {
 			http.Error(w, "Error parsing HTML template", http.StatusInternalServerError)
 			return
@@ -106,6 +111,10 @@ func main() {
 			return
 		}
 	})
+
+	// Menyediakan akses ke file statis (style.css)
+	staticDir := "/static/"
+	http.Handle(staticDir, http.StripPrefix(staticDir, http.FileServer(http.Dir(filepath.Join(".", "templates")))))
 
 	// Mulai server di port 8080
 	fmt.Println("Server listening on port 8080...")
