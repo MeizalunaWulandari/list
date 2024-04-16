@@ -1,16 +1,19 @@
 package main
 
 import (
+	"embed"
 	"encoding/json"
 	"fmt"
 	"html/template"
 	"io/ioutil"
 	"net/http"
 	"os"
-	"path/filepath"
 
 	"github.com/joho/godotenv"
 )
+
+//go:embed templates/*
+var content embed.FS
 
 // Struct untuk menyimpan data DNS Record
 type DNSRecord struct {
@@ -26,8 +29,26 @@ func main() {
 
 	authToken := os.Getenv("AUTH_TOKEN")
 
+	// Menyajikan file statis (style.css)
+	staticDir := "/static/"
+	http.Handle(staticDir, http.StripPrefix(staticDir, http.FileServer(http.FS(content))))
+
 	// Menangani rute "/result"
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		// Baca file template dari binary
+		templateFile, err := content.ReadFile("templates/index.html")
+		if err != nil {
+			http.Error(w, "Error reading template file", http.StatusInternalServerError)
+			return
+		}
+
+		// Parse template
+		tmpl, err := template.New("index").Parse(string(templateFile))
+		if err != nil {
+			http.Error(w, "Error parsing HTML template", http.StatusInternalServerError)
+			return
+		}
+
 		// Buat klien HTTP
 		client := &http.Client{}
 
@@ -90,13 +111,6 @@ func main() {
 			}
 		}
 
-		// Menggunakan template HTML
-		tmpl, err := template.ParseFiles("templates/index.html")
-		if err != nil {
-			http.Error(w, "Error parsing HTML template", http.StatusInternalServerError)
-			return
-		}
-
 		// Menyusun data untuk disampaikan ke template
 		data := struct {
 			Records []DNSRecord
@@ -111,10 +125,6 @@ func main() {
 			return
 		}
 	})
-
-	// Menyediakan akses ke file statis (style.css)
-	staticDir := "/static/"
-	http.Handle(staticDir, http.StripPrefix(staticDir, http.FileServer(http.Dir(filepath.Join(".", "templates")))))
 
 	// Mulai server di port 8080
 	fmt.Println("Server listening on port 8080...")
