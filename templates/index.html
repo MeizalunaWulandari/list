@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta content="Meizaluna Wulandari" name="description"/>
+  <meta content="Meizaluna Wulandari" name="keyword"/>
+  <meta content="Meizaluna Wulandari" name="googlebot"/>
+  <meta content="nositelinkssearchbox" name="google"/>
+  <meta content="notranslate" name="googlebot"/>
+  <meta content="nopagereadaloud" name="google"/>
+  <meta content="Meizaluna Wulandari" property="og:title"/>
+  <meta content="biodata" property="og:type"/>
+  <meta content="https://luna.micinproject.my.id" property="og:url"/>
+  <meta content="https://luna.micinproject.my.id/me.jpg" property="og:image"/>
+  <meta content="Meizaluna Wulandari" property="og:description"/>
+  <meta content="Meizaluna Wulandari" property="og:site_name"/>
+  <meta content="Meizaluna Wulandari" name="twitter:image:alt"/>
+  <!-- <meta content="noindex, nofollow" name="robots"/> -->
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+
+  <link rel="canonical" href="https://luna.micinproject.my.id" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" type="text/css" href="static/style.css"/>
+  <title>MicinProject by Meizaluna Wulandari</title>
+</head>
+<body>
+    <div class="container">
+        <div class="box">
+          <p class="center-p">MicinProject by Meizaluna Wulandari</p>
+          <div id="align">
+            {{ range .Records }}
+                <a href="https://{{.Name}}" target="_blank"><p class="green shadow">https://{{.Name}}</p></a>
+            {{ end }}
+          </div>
+      </div>
+  </div>
+
+</body>
+</html>
